@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  TranslateView_Base
+
+  Created by Yuki Sasaki on 2025/11/25.
+  
+*/
+
+"greeting" = "こんにちは";
+"changeLang" = "言語変更";
+"editMemo" = "メモ編集";
+"selectLanguage" = "言語を選択";
+"cancelButton" = "キャンセル";
