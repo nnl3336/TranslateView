@@ -37,19 +37,18 @@ class ViewController: UIViewController {
     let label = UILabel()
     let button = UIButton(type: .system)
     
-    // 現在の言語コード（"ja" / "en"）
-    var currentLang = "ja" {
+    // 言語リスト
+    let languages = ["ja", "en", "zh-Hans", "zh-Hant"]
+    var currentIndex = 0 {
         didSet {
             updateTexts()
         }
     }
     
-    // 選択中のバンドル
     private var languageBundle: Bundle = .main
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = .white
 
         // ---- Label ----
@@ -76,7 +75,7 @@ class ViewController: UIViewController {
     }
 
     func updateTexts() {
-        // 言語用バンドルを切替
+        let currentLang = languages[currentIndex]
         if let path = Bundle.main.path(forResource: currentLang, ofType: "lproj"),
            let bundle = Bundle(path: path) {
             languageBundle = bundle
@@ -84,16 +83,16 @@ class ViewController: UIViewController {
             languageBundle = .main
         }
 
-        // UILabel / UIButton のテキスト更新
         label.text = NSLocalizedString("greeting", bundle: languageBundle, comment: "")
         button.setTitle(NSLocalizedString("translate", bundle: languageBundle, comment: ""), for: .normal)
     }
 
     @objc func tapTranslate() {
-        // 言語を切り替え
-        currentLang = (currentLang == "ja") ? "en" : "ja"
+        // 次の言語に切替（ループ）
+        currentIndex = (currentIndex + 1) % languages.count
     }
 }
+
 
 // SwiftUI 用のラッパー
 struct ViewControllerWrapper: UIViewControllerRepresentable {
