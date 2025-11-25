@@ -36,6 +36,16 @@ class ViewController: UIViewController {
 
     let label = UILabel()
     let button = UIButton(type: .system)
+    
+    // 現在の言語コード（"ja" / "en"）
+    var currentLang = "ja" {
+        didSet {
+            updateTexts()
+        }
+    }
+    
+    // 選択中のバンドル
+    private var languageBundle: Bundle = .main
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,13 +53,11 @@ class ViewController: UIViewController {
         view.backgroundColor = .white
 
         // ---- Label ----
-        label.text = NSLocalizedString("greeting", comment: "")
         label.font = .systemFont(ofSize: 24)
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
 
         // ---- Button ----
-        button.setTitle(NSLocalizedString("translate", comment: ""), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(tapTranslate), for: .touchUpInside)
@@ -63,12 +71,27 @@ class ViewController: UIViewController {
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             button.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 32)
         ])
+        
+        updateTexts()
+    }
+
+    func updateTexts() {
+        // 言語用バンドルを切替
+        if let path = Bundle.main.path(forResource: currentLang, ofType: "lproj"),
+           let bundle = Bundle(path: path) {
+            languageBundle = bundle
+        } else {
+            languageBundle = .main
+        }
+
+        // UILabel / UIButton のテキスト更新
+        label.text = NSLocalizedString("greeting", bundle: languageBundle, comment: "")
+        button.setTitle(NSLocalizedString("translate", bundle: languageBundle, comment: ""), for: .normal)
     }
 
     @objc func tapTranslate() {
-        // 押したら常に最新の翻訳で更新
-        label.text = NSLocalizedString("hello", comment: "")
-        button.setTitle(NSLocalizedString("translate", comment: ""), for: .normal)
+        // 言語を切り替え
+        currentLang = (currentLang == "ja") ? "en" : "ja"
     }
 }
 
